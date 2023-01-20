@@ -1,11 +1,21 @@
+// header file for base.c
+
 #ifndef __HEADER_H
 #define __HEADER_H
 
-typedef struct {
+typedef struct instruction{
 	int op; // opcode
-	int m; // M 
+	int m; // M
 } instruction;
 
-// function prototypes can go here
+typedef struct stack{
+	int size;
+	int *sp;
+	int *array;
+} stack;
+
+// function prototypes
+stack *create_stack();
+stack *push(int n);
 
 #endif
