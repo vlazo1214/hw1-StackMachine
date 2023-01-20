@@ -1,5 +1,4 @@
 // base file for stack machine
-// start/Spring 22/SystemsSoftware/hw1-StackMachine (for vin)
 
 #include "header.h"
 #include <stdio.h>
@@ -8,48 +7,89 @@
 #define MAX_STACK_HEIGHT 2048
 #define MAX_CODE_LENGTH 512
 
-// create a stack using user input
-// * idk if m is supposed to be there or not or if its supposed to be max_stack_height
-stack *create_stack(int m)
-{
-	stack *bp = malloc(sizeof(stack));
-	
-	bp->array = malloc(sizeof(m));
+// macro i use to toggle between if i need to debug stuff
+#define DEBUG 1
 
-	bp->sp = NULL;
+// prints stack elements
+void print_stack(stack *bp)
+{
+	int curr;
+	int i;
+
+	if (bp == NULL)
+	{
+		printf("NULL stack :(\n");
+		return;
+	}
+
+	curr = bp->sp-1;
+
+	// print stack from top to bottom
+	while (curr >= 0)
+	{
+		printf("%d\n", bp->array[curr]);
+		curr--;
+	}
+}
+
+// 1 (LIT) push an element onto the stack, returns ptr to changed stack. assumes stack is not NULL
+stack *push(stack *bp, int n)
+{
+	bp->array[bp->sp] = n;
+
+	// update size and sp before returning
+	bp->sp++;
+	bp->size++;
 
 	return bp;
 }
 
-// returns 0 is stack is null, 1 if size is 0, and 2 if neither. may change this to a
-// traditional "return 1 if empty 0 otherwise" if this method is deemed unnecessary
-int isEmpty(stack *bp)
+// 2 (RTN)
+
+// 3 (CAL)
+
+// 4 (POP)
+
+// 5 (PSI)
+
+// 6 (PRM)
+
+// 7 (STO)
+
+// 8 (INC) create a stack with user input, m
+stack *create_stack(int m)
 {
-	if (bp == NULL)
-		return 0;
-	else if (bp->size == 0)
-		return 1;
-	else
-		return 2;
+	stack *bp = malloc(sizeof(stack));
+	
+	bp->array = calloc(m, sizeof(int));
+
+	bp->sp = 0;
+	bp->size = 0;
+
+	return bp;
 }
 
-// push an element onto the stack
-// stack *push(stack *bp, int n)
-// {
-// 	// if stack is null, create a stack and return it
-// 	if (bp == NULL)
-// 	{
-// 		stack *new_stack = create_stack();
-// 		return new_stack;
-// 	}
+// 9 (JMP)
 
+// 10 (JPC)
 
-// }
+// 11 (CHO)
+
+// 12 (CHI)
+
+// 13 (HLT)
+
+// 14 (NBD)
 
 // driver: take in cmd line args containing instructions 
 int main(int argc, char *argv)
 {
-	stack *bp = create_stack(2);
+	stack *bp = create_stack(3);
+	
+	bp = push(bp, 5);
+	bp = push(bp, 45646);
 
-    printf("hello\n");
+	if (DEBUG)
+		print_stack(bp);
+
 }
