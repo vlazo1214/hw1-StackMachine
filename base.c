@@ -10,45 +10,76 @@
 // macro i use to toggle between if i need to debug stuff
 #define DEBUG 1
 
+// aux functions
+
 // prints stack elements
-void print_stack(stack *bp)
+void print_stack(stack *s)
 {
 	int curr;
 	int i;
 
-	if (bp == NULL)
+	if (s == NULL)
 	{
 		printf("NULL stack :(\n");
 		return;
 	}
 
-	curr = bp->sp-1;
+	curr = s->sp-1;
 
 	// print stack from top to bottom
 	while (curr >= 0)
 	{
-		printf("%d\n", bp->array[curr]);
+		printf("%d\n", s->array[curr]);
 		curr--;
 	}
 }
 
-// 1 (LIT) push an element onto the stack, returns ptr to changed stack. assumes stack is not NULL
-stack *push(stack *bp, int n)
+// allocates space for stack fields except array (done in INC).
+// did this to be able to print bp, sp, and pc fields when program starts
+stack *alloc()
 {
-	bp->array[bp->sp] = n;
+	stack *s = malloc(sizeof(stack));
 
-	// update size and sp before returning
-	bp->sp++;
-	bp->size++;
+	s->sp = 0;
+	s->size = 0;
+	s->bp = 0;
+	s->pc = 0;
 
-	return bp;
+	return s;
+}
+
+// 1 (LIT) push an element onto the stack, returns ptr to changed stack. assumes stack is not NULL
+stack *push(stack *s, int n)
+{
+	s->array[s->sp] = n;
+
+	// update size, sp, and pc before returning
+	s->sp++;
+	s->size++;
+	s->pc++;
+
+	return s;
 }
 
 // 2 (RTN)
 
 // 3 (CAL)
 
-// 4 (POP)
+// 4 (POP) pops top element from the stack
+int pop(stack *s)
+{
+	int ret = s->array[s->sp-1];
+
+	// delete element by overridding value to 0
+	s->array[s->sp-1] = 0;
+
+	s->sp--;
+	s->size--;
+
+	s->pc++;
+
+	return ret;
+}
 
 // 5 (PSI)
 
@@ -56,17 +87,14 @@ stack *push(stack *bp, int n)
 
 // 7 (STO)
 
-// 8 (INC) create a stack with user input, m
-stack *create_stack(int m)
-{
-	stack *bp = malloc(sizeof(stack));
-	
-	bp->array = calloc(m, sizeof(int));
+// 8 (INC) init stack with user input, m
+stack *init_stack(stack *s, int m)
+{	
+	s->array = calloc(m, sizeof(int));
 
-	bp->sp = 0;
-	bp->size = 0;
+	s->pc++;
 
-	return bp;
+	return s;
 }
 
 // 9 (JMP)
@@ -84,12 +112,12 @@ stack *create_stack(int m)
 // driver: take in cmd line args containing instructions 
 int main(int argc, char *argv)
 {
-	stack *bp = create_stack(3);
+	stack *s = create_stack(3);
 	
-	bp = push(bp, 5);
-	bp = push(bp, 45646);
+	s = push(s, 5);
+	s = push(s, 45646);
 
 	if (DEBUG)
-		print_stack(bp);
+		print_stack(s);
 
 }

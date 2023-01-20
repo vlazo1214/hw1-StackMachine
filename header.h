@@ -13,12 +13,16 @@ typedef struct instruction{
 // and array is how we're storing the elements
 typedef struct stack{
 	int size;
-	int sp;
+	int sp, bp, pc;
 	int *array;
 } stack;
 
 // function prototypes
-stack *create_stack(int m);
-stack *push(stack *bp, int n);
+stack *alloc();
+void print_stack(stack *s);
+
+stack *init_stack(stack *s, int m);
+stack *push(stack *s, int n);
+int pop(stack *s);
 
 #endif
