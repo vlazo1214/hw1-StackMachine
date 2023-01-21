@@ -103,7 +103,16 @@ stack *init_stack(stack *s, int m)
 
 // 10 (JPC)
 
-// 11 (CHO)
+// 11 (CHO) output and pop val at top of stack
+stack *out_and_pop(stack *s)
+{
+	printf("%d\n", s->array[s->sp-1]);
+
+	// dont have to update pc since pop takes care of it
+	s = pop(s);
+
+	return s;
+}
 
 // 12 (CHI)
 
