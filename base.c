@@ -12,11 +12,10 @@
 
 // aux functions
 
-// prints stack elements
+// print stack from top to bottom
 void print_stack(stack *s)
 {
 	int curr;
-	int i;
 
 	if (s == NULL)
 	{
@@ -26,7 +25,6 @@ void print_stack(stack *s)
 
 	curr = s->sp-1;
 
-	// print stack from top to bottom
 	while (curr >= 0)
 	{
 		printf("%d\n", s->array[curr]);
@@ -106,10 +104,8 @@ stack *init_stack(stack *s, int m)
 // 11 (CHO) output and pop val at top of stack
 stack *out_and_pop(stack *s)
 {
-	printf("%d\n", s->array[s->sp-1]);
-
-	// dont have to update pc since pop takes care of it
-	s = pop(s);
+	// pop takes care of updating pc, as well as popping from the stack
+	printf("%d\n", pop(s));
 
 	return s;
 }
@@ -124,12 +120,26 @@ stack *out_and_pop(stack *s)
 int main(int argc, char *argv)
 {
 	stack *s = alloc();
-	s = init_stack(s, 3);
+	s = init_stack(s, 2);
 	
 	s = push(s, 5);
 	s = push(s, 45646);
 
 	if (DEBUG)
+	{
+		printf("initial stack:\n");
+		printf("pc: %d\n", s->pc);
 		print_stack(s);
+	}
+	
+	printf("calling out and pop:\n");
+	out_and_pop(s);
+	printf("pc: %d\n", s->pc);
 
+	if (DEBUG)
+	{
+		printf("modified stack:\n");
+		printf("pc: %d\n", s->pc);
+		print_stack(s);
+	}
 }
