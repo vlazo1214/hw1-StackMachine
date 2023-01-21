@@ -112,7 +112,9 @@ stack *init_stack(stack *s, int m)
 // driver: take in cmd line args containing instructions 
 int main(int argc, char *argv)
 {
-	stack *s = create_stack(3);
+
+	stack *s = alloc();
+	s = init_stack(s, 3);
 	
 	s = push(s, 5);
 	s = push(s, 45646);
