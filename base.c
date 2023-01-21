@@ -48,6 +48,8 @@ stack *alloc()
 	return s;
 }
 
+// instructions
+
 // 1 (LIT) push an element onto the stack, returns ptr to changed stack. assumes stack is not NULL
 stack *push(stack *s, int n)
 {
