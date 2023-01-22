@@ -110,7 +110,13 @@ stack *out_and_pop(stack *s)
 	return s;
 }
 
-// 12 (CHI)
+// 12 (CHI) read in character value and push as an int
+stack *store_char(stack *s, int n)
+{
+	s = push(s, atoi(input));
+
+	return s;
+}
 
 // 13 (HLT)
 
@@ -132,9 +138,8 @@ int main(int argc, char *argv)
 		print_stack(s);
 	}
 	
-	printf("calling out and pop:\n");
-	out_and_pop(s);
-	printf("pc: %d\n", s->pc);
+	int n = atoi('a');
+	s = store_char(s, n);
 
 	if (DEBUG)
 	{
