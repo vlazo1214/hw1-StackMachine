@@ -12,6 +12,7 @@ typedef struct instruction{
 // stack struct: size is the curr number of elements, sp is the next free space (top of stack+1),
 // and array is how we're storing the elements
 typedef struct stack{
+	struct instruction *inst;
 	int size;
 	int sp, bp, pc;
 	int *array;
@@ -20,9 +21,13 @@ typedef struct stack{
 // function prototypes
 stack *alloc();
 void print_stack(stack *s);
+void free_stack(stack *s);
+char *check_op(int op_code);
 
-stack *init_stack(stack *s, int m);
 stack *push(stack *s, int n);
 int pop(stack *s);
+stack *init_stack(stack *s, int m);
+stack *out_and_pop(stack *s);
+stack *store_char(stack *s, int n);
 
 #endif
