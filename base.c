@@ -164,13 +164,7 @@ int pop(stack *s)
 	return ret;
 }
 
-// 5 (PSI) go to the address of the value at stack[sp-1] and push it
-stack *push_at_address(stack *s)
-{
-	s = push(s, s->array[s->sp-1]);
-
-	return s;
-}
+// 5 (PSI)
 
 // 6 (PRM)
 
@@ -190,24 +184,7 @@ stack *init_stack(stack *s, int m)
 
 // 9 (JMP)
 
-// 10 (JPC) if sp-1 is not 0, jump to a specified address, a, updating pc accordingly
-// and also popping the stack.
-stack *jump_cond(stack *s, int a)
-{
-	if (s->array[s->sp-1] != 0)
-	{
-		s->pc = a;
-		s->inst->op = 10;
-		s->inst->m = a;
-
-		pop(s);
-
-		return s;
-	}
-
-	else
-		return s;
-}
+// 10 (JPC)
 
 // 11 (CHO) output and pop val at top of stack
 stack *out_and_pop(stack *s)
@@ -246,32 +223,42 @@ int main(int argc, char **argv)
 		return 1;
 	
 	// int array to store the instructions for output and access
-	int inst = malloc((MAX_CODE_LENGTH * 2) sizeof(int)); 
+	//int * inst = malloc((MAX_CODE_LENGTH * 2) * sizeof(int)); 
+	int inst[512][2]; 
 	int row = 0;
 	int num = 0;
 	char * String = calloc(5, sizeof(char));
 
-
 	while (!feof(fp))
 	{
 		fscanf(fp, "%s", String);
-		inst[row][row % 2] = atoi(String);
+		//inst[row][row % 2] = atoi(String);
+		inst[row/2][row%2] = atoi(String);
 		row++;
 	}
 
-	stack *s = alloc();
+	row--;
+	row = row / 2;	
 
+	stack *s = alloc();
 
 	// read in text file and store accordingly
 
 	printf("Addr\tOP\tM\n");
+	for (int i = 0; i < row; i++)
+	{	
+		printf("%d\t%s\t%d", i, check_op(inst[i][0]), inst[i][1]);
+		printf("\n");
+	}
+	
 
 	// print instructions here
+
 
 	printf("Tracing...\n");
 
 	// begin printing instuction sequence
-	while (!= EOF)
+	while (!feof(fp))
 	{
 		// print pc, bp, and sp
 
@@ -281,5 +268,6 @@ int main(int argc, char **argv)
 	}
 
 	free_stack(s);
+	fclose(fp);
 	return 0;
 }
