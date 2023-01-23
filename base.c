@@ -3,6 +3,9 @@
 #include "header.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
 
 #define MAX_STACK_HEIGHT 2048
 #define MAX_CODE_LENGTH 512
@@ -232,7 +235,32 @@ stack *out_and_pop(stack *s)
 // driver: take in cmd line args containing instructions 
 int main(int argc, char **argv)
 {
+	FILE * fp;
+	char * filename = argv[1];
+	// if file name invalid:
+	if (filename == NULL)
+		return 0;
+	
+	fp = fopen(filename, "r");
+	if (fp == NULL)
+		return 1;
+	
+	// int array to store the instructions for output and access
+	int inst = malloc((MAX_CODE_LENGTH * 2) sizeof(int)); 
+	int row = 0;
+	int num = 0;
+	char * String = calloc(5, sizeof(char));
+
+
+	while (!feof(fp))
+	{
+		fscanf(fp, "%s", String);
+		inst[row][row % 2] = atoi(String);
+		row++;
+	}
+
 	stack *s = alloc();
+
 
 	// read in text file and store accordingly
 
@@ -243,7 +271,7 @@ int main(int argc, char **argv)
 	printf("Tracing...\n");
 
 	// begin printing instuction sequence
-	while (!= end of instructions)
+	while (!= EOF)
 	{
 		// print pc, bp, and sp
 
