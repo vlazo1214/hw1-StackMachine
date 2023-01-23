@@ -217,7 +217,6 @@ int main(int argc, char **argv)
 
 	// print instructions here
 
-
 	printf("Tracing...\n");
 
 	// begin printing instuction sequence
