@@ -198,9 +198,9 @@ stack *jump_cond(stack *s, int a)
 	{
 		s->pc = a;
 		s->inst->op = 10;
-		s->inst->m = a;
 
 		pop(s);
+		s->inst->m = a;
 
 		return s;
 	}
