@@ -250,10 +250,8 @@ int main(int argc, char **argv)
 		printf("%d\t%s\t%d", i, check_op(inst[i][0]), inst[i][1]);
 		printf("\n");
 	}
-	
 
 	// print instructions here
-
 
 	printf("Tracing...\n");
 
