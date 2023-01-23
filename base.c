@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 
 #define MAX_STACK_HEIGHT 2048
@@ -195,12 +196,12 @@ stack *push_at_address(stack *s)
 // 	s->array[s->sp-1] = second_to_last;
 // }
 
-// 8 (INC) init stack with user input, m
+// 8 (INC) soft push m amount of 0s ot the top of the stack
 stack *init_stack(stack *s, int m)
 {	
 	for (int i = 0; i < m; i++)
 	{
-		s->array[i] = 0;
+		s->array[s->sp] = 0;
 		s->sp++;
 		s->size++;
 	}
@@ -210,6 +211,17 @@ stack *init_stack(stack *s, int m)
 	s->inst->op = 8;
 
 	return s;
+}
+
+void test(stack *s)
+{
+	s = push(s, 23);
+	s = push(s, -457);
+	s = push(s, 582);
+
+	s = init_stack(s, 5);
+
+	print_stack(s);
 }
 
 // 9 (JMP)
@@ -261,46 +273,56 @@ int main(int argc, char **argv)
 {
 	// read in text file and store accordingly
 
-	FILE * fp;
-	char * filename = argv[1];
-	// if file name invalid:
-	if (filename == NULL)
-		return 0;
-	
-	fp = fopen(filename, "r");
-	if (fp == NULL)
-		return 1;
-	
-	// int array to store the instructions for output and access
-	int inst = malloc((MAX_CODE_LENGTH * 2) sizeof(int)); 
-	int row = 0;
-	int num = 0;
-	char * String = calloc(5, sizeof(char));
-
-
-	while (!feof(fp))
+	if (!DEBUG)
 	{
-		fscanf(fp, "%s", String);
-		inst[row][row % 2] = atoi(String);
-		row++;
+
+		// FILE * fp;
+		// char * filename = argv[1];
+		// // if file name invalid:
+		// if (filename == NULL)
+		// 	return 0;
+		
+		// fp = fopen(filename, "r");
+		// if (fp == NULL)
+		// 	return 1;
+		
+		// // int array to store the instructions for output and access
+		// int inst = malloc((MAX_CODE_LENGTH * 2) sizeof(int)); 
+		// int row = 0;
+		// int num = 0;
+		// char * String = calloc(5, sizeof(char));
+
+
+		// while (!feof(fp))
+		// {
+		// 	fscanf(fp, "%s", String);
+		// 	inst[row][row % 2] = atoi(String);
+		// 	row++;
+		// }
 	}
 
 	stack *s = alloc();
 
-	printf("Addr\tOP\tM\n");
+	// test(s);
 
-	// print instructions here
 
-	printf("Tracing...\n");
-
-	// begin printing instruction sequence
-	while (!= EOF)
+	if (!DEBUG)
 	{
-		// print pc, bp, and sp
+		printf("Addr\tOP\tM\n");
 
-		// print stack (prob nest a for loop)
-		
-		// print address and instuction
+		// print instructions here
+
+		printf("Tracing...\n");
+		// // begin printing instruction sequence
+		// while (!= EOF)
+		// {
+		// 	// print pc, bp, and sp
+
+		// 	// print stack (prob nest a for loop)
+			
+		// 	// print address and instuction
+		// }
+
 	}
 
 	free_stack(s);
