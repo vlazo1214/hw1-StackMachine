@@ -20,16 +20,29 @@ typedef struct stack{
 
 // function prototypes
 stack *alloc();
+
 void print_stack(stack *s);
+
 void free_stack(stack *s);
+
 char *check_op(int op_code);
 
+
 stack *push(stack *s, int n);
+
 int pop(stack *s);
+
 stack *push_at_address(stack *s);
+
+stack *store_n_pop(stack *s, int o);
+
 stack *init_stack(stack *s, int m);
+
 stack *jump_cond(stack *s, int a);
+
 stack *out_and_pop(stack *s);
+
 stack *store_char(stack *s, int n);
+
 
 #endif

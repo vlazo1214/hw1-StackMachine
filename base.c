@@ -13,6 +13,9 @@
 // macro i use to toggle between if i need to debug stuff
 #define DEBUG 1
 
+// used to denote out of bounds
+#define OUT_OF_BOUNDS INT_MIN
+
 // aux functions
 
 // print stack from top to bottom
@@ -42,6 +45,8 @@ stack *alloc()
 	stack *s = malloc(sizeof(stack));
 
 	s->inst = malloc(sizeof(instruction));
+
+	s->array = malloc(sizeof(int) * MAX_STACK_HEIGHT);
 
 	s->sp = 0;
 	s->size = 0;
@@ -127,7 +132,8 @@ char *check_op(int op_code)
 
 // instructions
 
-// 1 (LIT) push an element onto the stack, returns ptr to changed stack. assumes stack is not NULL
+// 1 (LIT) hard push an element onto the stack, returns ptr to changed stack. 
+// assumes stack is not NULL
 stack *push(stack *s, int n)
 {
 	s->array[s->sp] = n;
@@ -149,6 +155,13 @@ stack *push(stack *s, int n)
 // 4 (POP) pops top element from the stack
 int pop(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!");
+		
+		return OUT_OF_BOUNDS;
+	}
+
 	int ret = s->array[s->sp-1];
 
 	// delete element by overridding value to 0
@@ -174,12 +187,23 @@ stack *push_at_address(stack *s)
 
 // 6 (PRM)
 
-// 7 (STO)
+// !7 (STO) Store stack[SP − 2] into the stack at address stack[SP − 1] + o and pop
+// the stack twice
+// stack *store_n_pop(stack *s, int o)
+// {
+// 	int second_to_last = s->array[s->sp-2];
+// 	s->array[s->sp-1] = second_to_last;
+// }
 
 // 8 (INC) init stack with user input, m
 stack *init_stack(stack *s, int m)
 {	
-	s->array = calloc(m, sizeof(int));
+	for (int i = 0; i < m; i++)
+	{
+		s->array[i] = 0;
+		s->sp++;
+		s->size++;
+	}
 
 	s->pc++;
 
@@ -235,6 +259,8 @@ stack *out_and_pop(stack *s)
 // driver: take in cmd line args containing instructions 
 int main(int argc, char **argv)
 {
+	// read in text file and store accordingly
+
 	FILE * fp;
 	char * filename = argv[1];
 	// if file name invalid:
@@ -261,16 +287,13 @@ int main(int argc, char **argv)
 
 	stack *s = alloc();
 
-
-	// read in text file and store accordingly
-
 	printf("Addr\tOP\tM\n");
 
 	// print instructions here
 
 	printf("Tracing...\n");
 
-	// begin printing instuction sequence
+	// begin printing instruction sequence
 	while (!= EOF)
 	{
 		// print pc, bp, and sp
