@@ -161,7 +161,13 @@ int pop(stack *s)
 	return ret;
 }
 
-// 5 (PSI)
+// 5 (PSI) go to the address of the value at stack[sp-1] and push it
+stack *push_at_address(stack *s)
+{
+	s = push(s, s->array[s->sp-1]);
+
+	return s;
+}
 
 // 6 (PRM)
 
@@ -181,7 +187,24 @@ stack *init_stack(stack *s, int m)
 
 // 9 (JMP)
 
-// 10 (JPC)
+// 10 (JPC) if sp-1 is not 0, jump to a specified address, a, updating pc accordingly
+// and also popping the stack.
+stack *jump_cond(stack *s, int a)
+{
+	if (s->array[s->sp-1] != 0)
+	{
+		s->pc = a;
+		s->inst->op = 10;
+		s->inst->m = a;
+
+		pop(s);
+
+		return s;
+	}
+
+	else
+		return s;
+}
 
 // 11 (CHO) output and pop val at top of stack
 stack *out_and_pop(stack *s)
