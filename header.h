@@ -26,7 +26,9 @@ char *check_op(int op_code);
 
 stack *push(stack *s, int n);
 int pop(stack *s);
+stack *push_at_address(stack *s);
 stack *init_stack(stack *s, int m);
+stack *jump_cond(stack *s, int a);
 stack *out_and_pop(stack *s);
 stack *store_char(stack *s, int n);
 
