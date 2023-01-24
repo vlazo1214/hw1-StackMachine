@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 
 #define MAX_STACK_HEIGHT 2048
@@ -12,6 +13,9 @@
 
 // macro i use to toggle between if i need to debug stuff
 #define DEBUG 1
+
+// used to denote out of bounds
+#define OUT_OF_BOUNDS INT_MIN
 
 // aux functions
 
@@ -42,6 +46,8 @@ stack *alloc()
 	stack *s = malloc(sizeof(stack));
 
 	s->inst = malloc(sizeof(instruction));
+
+	s->array = malloc(sizeof(int) * MAX_STACK_HEIGHT);
 
 	s->sp = 0;
 	s->size = 0;
@@ -127,7 +133,8 @@ char *check_op(int op_code)
 
 // instructions
 
-// 1 (LIT) push an element onto the stack, returns ptr to changed stack. assumes stack is not NULL
+// 1 (LIT) hard push an element onto the stack, returns ptr to changed stack. 
+// assumes stack is not NULL
 stack *push(stack *s, int n)
 {
 	s->array[s->sp] = n;
@@ -146,34 +153,91 @@ stack *push(stack *s, int n)
 
 // 3 (CAL)
 
-// 4 (POP) pops top element from the stack
-int pop(stack *s)
+// 4 (POP) hard pops top element from the stack
+stack *pop(stack *s)
 {
-	int ret = s->array[s->sp-1];
-
-	// delete element by overridding value to 0
-	s->array[s->sp-1] = 0;
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!");
+		
+		return s;
+	}
 
 	s->sp--;
 	s->size--;
 
+	// update pc
 	s->pc++;
 
 	s->inst->op = 4;
 
-	return ret;
+	return s;
 }
 
+<<<<<<< HEAD
 // 5 (PSI)
+=======
+// 5 (PSI) go to the address of the value at stack[sp-1] and push it
+stack *push_at_address(stack *s)
+{
+	// updates pc
+	s = push(s, s->array[s->sp-1]);
+
+	return s;
+}
+>>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 
 // 6 (PRM)
 
-// 7 (STO)
+// 7 (STO) Store stack[SP − 2] into the stack at address stack[SP − 1] + o and soft pop
+// the stack twice
+stack *store_n_pop(stack *s, int o)
+{
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+		
+		return s;
+	}
 
-// 8 (INC) init stack with user input, m
+	int second_to_last = s->array[s->sp-2];
+	s->array[s->sp-1 + o] = second_to_last;
+
+	s->sp -= 2;
+
+	// updates pc
+	s->pc++;
+
+	return s;
+}
+
+void test(stack *s)
+{
+	s = push(s, 1);
+	s = push(s, 2);
+	s = push(s, 3);
+	s = push(s, 4);
+	s = push(s, 5);
+	s = push(s, 89);
+
+	print_stack(s);
+
+	printf("\n");
+
+	s = jump_cond(s, 23);
+
+	print_stack(s);
+}
+
+// 8 (INC) soft push m amount of 0s ot the top of the stack
 stack *init_stack(stack *s, int m)
 {	
-	s->array = calloc(m, sizeof(int));
+	for (int i = 0; i < m; i++)
+	{
+		s->array[s->sp] = 0;
+		s->sp++;
+		s->size++;
+	}
 
 	s->pc++;
 
@@ -182,15 +246,41 @@ stack *init_stack(stack *s, int m)
 	return s;
 }
 
+
 // 9 (JMP)
 
+<<<<<<< HEAD
 // 10 (JPC)
+=======
+// 10 (JPC) if sp-1 is not 0, jump to a specified address, a, updating pc accordingly
+// and also popping the stack.
+stack *jump_cond(stack *s, int a)
+{
+	if (s->array[s->sp-1] != 0)
+	{
+		s->pc = a;
+		s->inst->op = 10;
 
-// 11 (CHO) output and pop val at top of stack
+		pop(s);
+		s->inst->m = a;
+
+		return s;
+	}
+
+	else
+		return s;
+}
+>>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
+
+// 11 (CHO) output and hard pop val at top of stack
 stack *out_and_pop(stack *s)
 {
+	s = pop(s);
+	int temp = s->array[s->sp];
+	char out = (char) temp;
+
 	// pop takes care of updating pc, as well as popping from the stack
-	printf("%d\n", pop(s));
+	printf("%c\n", out);
 
 	s->inst->op = 11;
 
@@ -212,6 +302,7 @@ stack *out_and_pop(stack *s)
 // driver: take in cmd line args containing instructions 
 int main(int argc, char **argv)
 {
+<<<<<<< HEAD
 	FILE * fp;
 	char * filename = argv[1];
 	// if file name invalid:
@@ -235,15 +326,49 @@ int main(int argc, char **argv)
 		//inst[row][row % 2] = atoi(String);
 		inst[row/2][row%2] = atoi(String);
 		row++;
+=======
+	// read in text file and store accordingly
+
+	if (!DEBUG)
+	{
+
+		// FILE * fp;
+		// char * filename = argv[1];
+		// // if file name invalid:
+		// if (filename == NULL)
+		// 	return 0;
+		
+		// fp = fopen(filename, "r");
+		// if (fp == NULL)
+		// 	return 1;
+		
+		// // int array to store the instructions for output and access
+		// int inst = malloc((MAX_CODE_LENGTH * 2) sizeof(int)); 
+		// int row = 0;
+		// int num = 0;
+		// char * String = calloc(5, sizeof(char));
+
+
+		// while (!feof(fp))
+		// {
+		// 	fscanf(fp, "%s", String);
+		// 	inst[row][row % 2] = atoi(String);
+		// 	row++;
+		// }
+>>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 	}
 
 	row--;
 	row = row / 2;	
 
+<<<<<<< HEAD
 	stack *s = alloc();
+=======
+	test(s);
+>>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 
-	// read in text file and store accordingly
 
+<<<<<<< HEAD
 	printf("Addr\tOP\tM\n");
 	for (int i = 0; i < row; i++)
 	{	
@@ -257,12 +382,25 @@ int main(int argc, char **argv)
 
 	// begin printing instuction sequence
 	while (!feof(fp))
+=======
+	if (!DEBUG)
+>>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 	{
-		// print pc, bp, and sp
+		printf("Addr\tOP\tM\n");
 
-		// print stack (prob nest a for loop)
-		
-		// print address and instuction
+		// print instructions here
+
+		printf("Tracing...\n");
+		// // begin printing instruction sequence
+		// while (!= EOF)
+		// {
+		// 	// print pc, bp, and sp
+
+		// 	// print stack (prob nest a for loop)
+			
+		// 	// print address and instuction
+		// }
+
 	}
 
 	free_stack(s);
