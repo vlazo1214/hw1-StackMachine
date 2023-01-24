@@ -153,34 +153,31 @@ stack *push(stack *s, int n)
 
 // 3 (CAL)
 
-// 4 (POP) pops top element from the stack
-int pop(stack *s)
+// 4 (POP) hard pops top element from the stack
+stack *pop(stack *s)
 {
 	if (s->sp-1 < 0 || s->sp-2 < 0)
 	{
 		printf("Trying to pop an empty stack!");
 		
-		return OUT_OF_BOUNDS;
+		return s;
 	}
-
-	int ret = s->array[s->sp-1];
-
-	// delete element by overridding value to 0
-	s->array[s->sp-1] = 0;
 
 	s->sp--;
 	s->size--;
 
+	// update pc
 	s->pc++;
 
 	s->inst->op = 4;
 
-	return ret;
+	return s;
 }
 
 // 5 (PSI) go to the address of the value at stack[sp-1] and push it
 stack *push_at_address(stack *s)
 {
+	// updates pc
 	s = push(s, s->array[s->sp-1]);
 
 	return s;
@@ -188,13 +185,45 @@ stack *push_at_address(stack *s)
 
 // 6 (PRM)
 
-// !7 (STO) Store stack[SP − 2] into the stack at address stack[SP − 1] + o and pop
+// 7 (STO) Store stack[SP − 2] into the stack at address stack[SP − 1] + o and soft pop
 // the stack twice
-// stack *store_n_pop(stack *s, int o)
-// {
-// 	int second_to_last = s->array[s->sp-2];
-// 	s->array[s->sp-1] = second_to_last;
-// }
+stack *store_n_pop(stack *s, int o)
+{
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+		
+		return s;
+	}
+
+	int second_to_last = s->array[s->sp-2];
+	s->array[s->sp-1 + o] = second_to_last;
+
+	s->sp -= 2;
+
+	// updates pc
+	s->pc++;
+
+	return s;
+}
+
+void test(stack *s)
+{
+	s = push(s, 1);
+	s = push(s, 2);
+	s = push(s, 3);
+	s = push(s, 4);
+	s = push(s, 5);
+	s = push(s, 89);
+
+	print_stack(s);
+
+	printf("\n");
+
+	s = jump_cond(s, 23);
+
+	print_stack(s);
+}
 
 // 8 (INC) soft push m amount of 0s ot the top of the stack
 stack *init_stack(stack *s, int m)
@@ -213,16 +242,6 @@ stack *init_stack(stack *s, int m)
 	return s;
 }
 
-void test(stack *s)
-{
-	s = push(s, 23);
-	s = push(s, -457);
-	s = push(s, 582);
-
-	s = init_stack(s, 5);
-
-	print_stack(s);
-}
 
 // 9 (JMP)
 
@@ -245,11 +264,15 @@ stack *jump_cond(stack *s, int a)
 		return s;
 }
 
-// 11 (CHO) output and pop val at top of stack
+// 11 (CHO) output and hard pop val at top of stack
 stack *out_and_pop(stack *s)
 {
+	s = pop(s);
+	int temp = s->array[s->sp];
+	char out = (char) temp;
+
 	// pop takes care of updating pc, as well as popping from the stack
-	printf("%d\n", pop(s));
+	printf("%c\n", out);
 
 	s->inst->op = 11;
 
@@ -303,7 +326,7 @@ int main(int argc, char **argv)
 
 	stack *s = alloc();
 
-	// test(s);
+	test(s);
 
 
 	if (!DEBUG)
