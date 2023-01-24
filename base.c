@@ -174,9 +174,6 @@ stack *pop(stack *s)
 	return s;
 }
 
-<<<<<<< HEAD
-// 5 (PSI)
-=======
 // 5 (PSI) go to the address of the value at stack[sp-1] and push it
 stack *push_at_address(stack *s)
 {
@@ -185,8 +182,6 @@ stack *push_at_address(stack *s)
 
 	return s;
 }
->>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
-
 // 6 (PRM)
 
 // 7 (STO) Store stack[SP − 2] into the stack at address stack[SP − 1] + o and soft pop
@@ -249,9 +244,6 @@ stack *init_stack(stack *s, int m)
 
 // 9 (JMP)
 
-<<<<<<< HEAD
-// 10 (JPC)
-=======
 // 10 (JPC) if sp-1 is not 0, jump to a specified address, a, updating pc accordingly
 // and also popping the stack.
 stack *jump_cond(stack *s, int a)
@@ -270,7 +262,6 @@ stack *jump_cond(stack *s, int a)
 	else
 		return s;
 }
->>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 
 // 11 (CHO) output and hard pop val at top of stack
 stack *out_and_pop(stack *s)
@@ -302,7 +293,6 @@ stack *out_and_pop(stack *s)
 // driver: take in cmd line args containing instructions 
 int main(int argc, char **argv)
 {
-<<<<<<< HEAD
 	FILE * fp;
 	char * filename = argv[1];
 	// if file name invalid:
@@ -326,49 +316,14 @@ int main(int argc, char **argv)
 		//inst[row][row % 2] = atoi(String);
 		inst[row/2][row%2] = atoi(String);
 		row++;
-=======
-	// read in text file and store accordingly
-
-	if (!DEBUG)
-	{
-
-		// FILE * fp;
-		// char * filename = argv[1];
-		// // if file name invalid:
-		// if (filename == NULL)
-		// 	return 0;
-		
-		// fp = fopen(filename, "r");
-		// if (fp == NULL)
-		// 	return 1;
-		
-		// // int array to store the instructions for output and access
-		// int inst = malloc((MAX_CODE_LENGTH * 2) sizeof(int)); 
-		// int row = 0;
-		// int num = 0;
-		// char * String = calloc(5, sizeof(char));
-
-
-		// while (!feof(fp))
-		// {
-		// 	fscanf(fp, "%s", String);
-		// 	inst[row][row % 2] = atoi(String);
-		// 	row++;
-		// }
->>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 	}
 
 	row--;
 	row = row / 2;	
 
-<<<<<<< HEAD
 	stack *s = alloc();
-=======
-	test(s);
->>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 
 
-<<<<<<< HEAD
 	printf("Addr\tOP\tM\n");
 	for (int i = 0; i < row; i++)
 	{	
@@ -382,9 +337,6 @@ int main(int argc, char **argv)
 
 	// begin printing instuction sequence
 	while (!feof(fp))
-=======
-	if (!DEBUG)
->>>>>>> 7f05f8428e82ee5479846057b44f663989f8e5b0
 	{
 		printf("Addr\tOP\tM\n");
 
