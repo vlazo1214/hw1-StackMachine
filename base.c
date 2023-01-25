@@ -88,13 +88,14 @@ int main(int argc, char **argv)
 			printf("stack: ");
 		int temp = s->bp;
 		if (s->flag == 0)
-		{	while(temp < s->sp)
+		{	
+			while(temp < s->sp)
 			{
 				printf("S[%d]: %d ", temp, s->array[temp]);
 				temp++;
 			}
 		
-		printf("\n");
+			printf("\n");
 		}
 
 		// if we need to halt or pop from empty 

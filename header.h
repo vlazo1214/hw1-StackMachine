@@ -30,7 +30,7 @@ void free_stack(stack *s);
 
 char *check_op(int op_code);
 
-stack *call(stack *s, int op, int field)
+stack *call(stack *s, int op, int field);
 
 
 stack *push(stack *s, int n);
