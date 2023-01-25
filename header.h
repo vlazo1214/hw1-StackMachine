@@ -20,6 +20,8 @@ typedef struct stack{
 } stack;
 
 // function prototypes
+void test(stack *s);
+
 stack *alloc();
 
 void print_stack(stack *s);
@@ -51,7 +53,7 @@ stack *jump_cond(stack *s, int a);
 
 stack *out_and_pop(stack *s);
 
-stack *store_char(stack *s, int n);
+stack *store_char(stack *s, char in);
 
 
 #endif

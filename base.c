@@ -220,6 +220,7 @@ stack *from_subroutine(stack *s)
 	{
 		printf("Trying to pop an empty stack!");
 
+		s->flag = -1;
 		s->inst->op = 2;
 		
 		return s;
@@ -256,6 +257,7 @@ stack *pop(stack *s)
 	{
 		printf("Trying to pop an empty stack!");
 
+		s->flag = -1;
 		s->inst->op = 4;
 		
 		return s;
@@ -304,6 +306,8 @@ stack *store_n_pop(stack *s, int o)
 	{
 		printf("Trying to pop an empty stack!\n");
 		
+		s->flag = -1;
+
 		return s;
 	}
 
@@ -319,24 +323,6 @@ stack *store_n_pop(stack *s, int o)
 
 	return s;
 }
-
-// void test(stack *s)
-// {
-// 	s = push(s, 1);
-// 	s = push(s, 2);
-// 	s = push(s, 3);
-// 	s = push(s, 4);
-// 	s = push(s, 5);
-// 	s = push(s, 89);
-
-// 	print_stack(s);
-
-// 	printf("\n");
-
-// 	s = jump_cond(s, 23);
-
-// 	print_stack(s);
-// }
 
 // 8 (INC) soft push m amount of 0s ot the top of the stack
 stack *init_stack(stack *s, int m)
@@ -387,6 +373,15 @@ stack *jump_cond(stack *s, int a)
 // 11 (CHO) output and hard pop val at top of stack
 stack *out_and_pop(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+		
+		s->flag = -1;
+
+		return s;
+	}
+
 	s = pop(s);
 	int temp = s->array[s->sp];
 	char out = (char) temp;
@@ -400,16 +395,45 @@ stack *out_and_pop(stack *s)
 }
 
 // 12 (CHI) read in character value and push as an int
-// stack *store_char(stack *s, int n)
-// {
-// 	s = push(s, atoi(input));
+stack *store_char(stack *s, char in)
+{
+	int n = (int) (in - 0);
 
-// 	return s;
-// }
+	s = push(s, n);
+
+	return s;
+}
+
+void test(stack *s)
+{
+	s = push(s, 1);
+	s = push(s, 2);
+	s = push(s, 3);
+
+	print_stack(s);
+
+	printf("\n");
+
+	s = store_char(s, 'Y');
+
+	print_stack(s);
+}
 
 // 13 (HLT)
+stack *halt(stack *s)
+{
+	s->flag = -1;
+
+	return s;
+}
 
 // 14 (NBD)
+stack *stop_print(stack *s)
+{
+	s->flag = 1;
+
+	return s;
+}
 
 // driver: take in cmd line args containing instructions 
 int main(int argc, char **argv)
@@ -418,7 +442,11 @@ int main(int argc, char **argv)
 	char * filename = argv[1];
 	// if file name invalid:
 	if (filename == NULL)
+	{
+		stack *s = alloc();
+		test(s);
 		return 0;
+	}
 	
 	fp = fopen(filename, "r");
 	if (fp == NULL)
