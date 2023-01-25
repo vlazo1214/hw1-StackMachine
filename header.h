@@ -30,9 +30,15 @@ char *check_op(int op_code);
 
 stack *push(stack *s, int n);
 
+stack *from_subroutine(stack *s);
+
+stack *shift_indices(stack *s, int p);
+
 stack *pop(stack *s);
 
 stack *push_at_address(stack *s);
+
+stack *parameter(stack *s, int o);
 
 stack *store_n_pop(stack *s, int o);
 

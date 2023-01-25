@@ -47,7 +47,7 @@ stack *alloc()
 
 	s->inst = malloc(sizeof(instruction));
 
-	s->array = malloc(sizeof(int) * MAX_STACK_HEIGHT);
+	s->array = calloc(MAX_STACK_HEIGHT, sizeof(int));
 
 	s->sp = 0;
 	s->size = 0;
@@ -149,9 +149,32 @@ stack *push(stack *s, int n)
 	return s;
 }
 
-// 2 (RTN)
+// 2 (RTN) return from a subroutine
+stack *from_subroutine(stack *s)
+{
+	s->pc = s->array[s->sp-1];
+	s->bp = s->array[s->sp-2];
+	s->sp -= 2;
 
-// 3 (CAL)
+	s->inst->op = 2;
+
+	return s;
+}
+
+// 3 (CAL) shift focus to index p, making some changes to the stack along the way
+stack *shift_indices(stack *s, int p)
+{
+	s->array[s->sp] = s->bp;
+	s->array[s->sp+1] = pc;
+
+	s->bp = s->sp;
+	s->sp += 2;
+	s->pc = p;
+
+	s->inst->op = 3;
+
+	return s;
+}
 
 // 4 (POP) hard pops top element from the stack
 stack *pop(stack *s)
@@ -159,6 +182,8 @@ stack *pop(stack *s)
 	if (s->sp-1 < 0 || s->sp-2 < 0)
 	{
 		printf("Trying to pop an empty stack!");
+
+		s->inst->op = 4;
 		
 		return s;
 	}
@@ -180,9 +205,23 @@ stack *push_at_address(stack *s)
 	// updates pc
 	s = push(s, s->array[s->sp-1]);
 
+	s->inst->op = 5;
+
 	return s;
 }
-// 6 (PRM)
+// 6 (PRM) Parameter at stack[BP − o] is pushed on the stack
+stack *parameter(stack *s, int o)
+{
+	s->array[s->sp] = s->array[s->bp - o];
+
+	s->sp++;
+	s->pc++;
+
+	s->inst->op = 6;
+	s->inst->m = o;
+
+	return s;
+}
 
 // 7 (STO) Store stack[SP − 2] into the stack at address stack[SP − 1] + o and soft pop
 // the stack twice
@@ -203,36 +242,34 @@ stack *store_n_pop(stack *s, int o)
 	// updates pc
 	s->pc++;
 
+	s->inst->op = 7;
+
 	return s;
 }
 
-void test(stack *s)
-{
-	s = push(s, 1);
-	s = push(s, 2);
-	s = push(s, 3);
-	s = push(s, 4);
-	s = push(s, 5);
-	s = push(s, 89);
+// void test(stack *s)
+// {
+// 	s = push(s, 1);
+// 	s = push(s, 2);
+// 	s = push(s, 3);
+// 	s = push(s, 4);
+// 	s = push(s, 5);
+// 	s = push(s, 89);
 
-	print_stack(s);
+// 	print_stack(s);
 
-	printf("\n");
+// 	printf("\n");
 
-	s = jump_cond(s, 23);
+// 	s = jump_cond(s, 23);
 
-	print_stack(s);
-}
+// 	print_stack(s);
+// }
 
 // 8 (INC) soft push m amount of 0s ot the top of the stack
 stack *init_stack(stack *s, int m)
 {	
-	for (int i = 0; i < m; i++)
-	{
-		s->array[s->sp] = 0;
-		s->sp++;
-		s->size++;
-	}
+	s->sp += m;
+	s->size += m;
 
 	s->pc++;
 
@@ -241,8 +278,14 @@ stack *init_stack(stack *s, int m)
 	return s;
 }
 
+// 9 (JMP) Jump to the address in stack[SP − 1] and pop
+stack *jump_to_address(stack *s)
+{
+	s->pc = s->array[s->sp-1];
+	s->sp--;
 
-// 9 (JMP)
+	return s;
+}
 
 // 10 (JPC) if sp-1 is not 0, jump to a specified address, a, updating pc accordingly
 // and also popping the stack.
@@ -256,11 +299,16 @@ stack *jump_cond(stack *s, int a)
 		pop(s);
 		s->inst->m = a;
 
+		s->inst->op = 9;
+
 		return s;
 	}
 
 	else
+	{
+		s->inst->op = 10;
 		return s;
+	}
 }
 
 // 11 (CHO) output and hard pop val at top of stack
