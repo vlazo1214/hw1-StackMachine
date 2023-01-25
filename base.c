@@ -131,6 +131,69 @@ char *check_op(int op_code)
 	}
 }
 
+/*stack *call(stack *s, int op, int field)
+{
+	switch (op)
+	{
+		case 1:
+			return
+		case 2:
+			return
+		case 3:
+			return
+		case 4:
+			return
+		case 5:
+			return
+		case 6:
+			return
+		case 7:
+			return
+		case 8:
+			return init_stack(s, field);
+		case 9:
+			return
+		case 10:
+			return
+		case 11:
+			return
+		case 12:
+			return
+		case 13:
+			return
+		case 14:
+			return
+		case 15:
+			return
+		case 16:
+			return
+		case 17:
+			return
+		case 18:
+			return
+		case 19:
+			return
+		case 20:
+			return
+		case 21:
+			return
+		case 22:
+			return
+		case 23:
+			return
+		case 24:
+			return
+		case 25:
+			return
+		case 26:
+			return
+		case 27:
+			return
+	}
+
+}*/
+
+
 // instructions
 
 // 1 (LIT) hard push an element onto the stack, returns ptr to changed stack. 
@@ -382,25 +445,33 @@ int main(int argc, char **argv)
 	// print instructions here
 
 	printf("Tracing...\n");
-
+	//printf("row = %d\n", row);
+	int curInst = 0;
 	// begin printing instuction sequence
-	while (!feof(fp))
+	while (curInst < row)
 	{
-		printf("Addr\tOP\tM\n");
+		// printf("row = %d\n# of cycles = %d\n", row, curInst);
+		// print pc, bp, and sp
+		printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
 
-		// print instructions here
+		if (curInst == 0)
+		{
+			s = init_stack(s, inst[0][1]);
+			//break;
+		}
 
-		printf("Tracing...\n");
-		// // begin printing instruction sequence
-		// while (!= EOF)
-		// {
-		// 	// print pc, bp, and sp
+		printf("stack: ");
+		int temp = s->bp;
+		/*while(temp <= s->sp)
+		{
+			printf("S[%d]: %d ", temp, s->array[temp]);
+			temp++;
+		}*/
+		printf("\n");
 
-		// 	// print stack (prob nest a for loop)
-			
-		// 	// print address and instuction
-		// }
+		printf("==> addr: \n");
 
+		curInst++;
 	}
 
 	free_stack(s);
