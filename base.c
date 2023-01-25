@@ -161,7 +161,7 @@ stack *call(stack *s, int op, int field)
 		case 12:
 			return s;
 		case 13:
-			return s;
+			return halt(s);
 		case 14:
 			return s;
 		case 15:
@@ -423,7 +423,7 @@ void test(stack *s)
 stack *halt(stack *s)
 {
 	s->flag = -1;
-
+	s->pc++;
 	return s;
 }
 
@@ -473,7 +473,6 @@ int main(int argc, char **argv)
 
 	stack *s = alloc();
 
-
 	printf("Addr\tOP\tM\n");
 	for (int i = 0; i < row; i++)
 	{	
@@ -484,7 +483,6 @@ int main(int argc, char **argv)
 	// print instructions here
 
 	printf("Tracing...\n");
-	//printf("row = %d\n", row);
 	int curInst = 0;
 	// begin printing instuction sequence
 
@@ -494,35 +492,36 @@ int main(int argc, char **argv)
 
 	while (curInst <= row)
 	{
-		printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[curInst][0]), inst[curInst][1]);
+		if (s->flag == 0)
+			printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[curInst][0]), inst[curInst][1]);
 
 		s = call(s, inst[curInst][0], inst[curInst][1]);
-		
-		/*if (curInst == 0)
-		{
-			s = init_stack(s, inst[0][1]);
-			//break;
-		}*/
 
-		if (inst[curInst][0] == 13)
+		/*if (inst[curInst][0] == 13)
 		{
 			halt = 1;
 			s->pc++;
-		}
+		}*/
 		// printf("row = %d\n# of cycles = %d\n", row, curInst);
 		// print pc, bp, and sp
-		printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
+		if (s->flag == 0)
+			printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
 
-		printf("stack: ");
+		if (s->flag == 0)
+			printf("stack: ");
 		int temp = s->bp;
-		while(temp < s->sp)
-		{
-			printf("S[%d]: %d ", temp, s->array[temp]);
-			temp++;
-		}
+		if (s->flag == 0)
+		{	while(temp < s->sp)
+			{
+				printf("S[%d]: %d ", temp, s->array[temp]);
+				temp++;
+			}
+		
 		printf("\n");
+		}
 
-		if (halt)
+		// if we need to halt or pop from empty 
+		if (s->flag == -1)
 			break;
 
 		curInst++;

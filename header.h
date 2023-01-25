@@ -55,5 +55,9 @@ stack *out_and_pop(stack *s);
 
 stack *store_char(stack *s, char in);
 
+stack *halt(stack *s);
+
+stack *stop_print(stack *s);
+
 
 #endif
