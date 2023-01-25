@@ -16,6 +16,7 @@ typedef struct stack{
 	int size;
 	int sp, bp, pc;
 	int *array;
+	int flag;
 } stack;
 
 // function prototypes
@@ -43,6 +44,8 @@ stack *parameter(stack *s, int o);
 stack *store_n_pop(stack *s, int o);
 
 stack *init_stack(stack *s, int m);
+
+stack *jump_to_address(stack *s);
 
 stack *jump_cond(stack *s, int a);
 

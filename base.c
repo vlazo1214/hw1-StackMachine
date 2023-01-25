@@ -53,6 +53,7 @@ stack *alloc()
 	s->size = 0;
 	s->bp = 0;
 	s->pc = 0;
+	s->flag = 0;
 
 	s->inst->op = 0;
 	s->inst->m = 0;
@@ -131,67 +132,67 @@ char *check_op(int op_code)
 	}
 }
 
-/*stack *call(stack *s, int op, int field)
+stack *call(stack *s, int op, int field)
 {
 	switch (op)
 	{
 		case 1:
-			return
+			return push(s, field);
 		case 2:
-			return
+			return from_subroutine(s);
 		case 3:
-			return
+			return shift_indices(s, field);
 		case 4:
-			return
+			return pop(s);
 		case 5:
-			return
+			return push_at_address(s);
 		case 6:
-			return
+			return parameter(s, field);
 		case 7:
-			return
+			return store_n_pop(s, field);
 		case 8:
 			return init_stack(s, field);
 		case 9:
-			return
+			return jump_to_address(s);
 		case 10:
-			return
+			return jump_cond(s, field);
 		case 11:
-			return
+			return out_and_pop(s);
 		case 12:
-			return
+			return s;
 		case 13:
-			return
+			return s;
 		case 14:
-			return
+			return s;
 		case 15:
-			return
+			return s;
 		case 16:
-			return
+			return s;
 		case 17:
-			return
+			return s;
 		case 18:
-			return
+			return s;
 		case 19:
-			return
+			return s;
 		case 20:
-			return
+			return s;
 		case 21:
-			return
+			return s;
 		case 22:
-			return
+			return s;
 		case 23:
-			return
+			return s;
 		case 24:
-			return
+			return s;
 		case 25:
-			return
+			return s;
 		case 26:
-			return
+			return s;
 		case 27:
-			return
+			return s;
 	}
 
-}*/
+}
 
 
 // instructions
@@ -215,6 +216,15 @@ stack *push(stack *s, int n)
 // 2 (RTN) return from a subroutine
 stack *from_subroutine(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!");
+
+		s->inst->op = 2;
+		
+		return s;
+	}
+
 	s->pc = s->array[s->sp-1];
 	s->bp = s->array[s->sp-2];
 	s->sp -= 2;
@@ -228,7 +238,7 @@ stack *from_subroutine(stack *s)
 stack *shift_indices(stack *s, int p)
 {
 	s->array[s->sp] = s->bp;
-	s->array[s->sp+1] = pc;
+	s->array[s->sp+1] = s->pc;
 
 	s->bp = s->sp;
 	s->sp += 2;
@@ -420,6 +430,7 @@ int main(int argc, char **argv)
 	int row = 0;
 	int num = 0;
 	char * String = calloc(5, sizeof(char));
+	int halt = 0;
 
 	while (!feof(fp))
 	{
@@ -448,28 +459,43 @@ int main(int argc, char **argv)
 	//printf("row = %d\n", row);
 	int curInst = 0;
 	// begin printing instuction sequence
-	while (curInst < row)
+
+	printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
+	printf("stack: \n");
+
+
+	while (curInst <= row)
 	{
+		printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[curInst][0]), inst[curInst][1]);
+
+		s = call(s, inst[curInst][0], inst[curInst][1]);
+		
+		/*if (curInst == 0)
+		{
+			s = init_stack(s, inst[0][1]);
+			//break;
+		}*/
+
+		if (inst[curInst][0] == 13)
+		{
+			halt = 1;
+			s->pc++;
+		}
 		// printf("row = %d\n# of cycles = %d\n", row, curInst);
 		// print pc, bp, and sp
 		printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
 
-		if (curInst == 0)
-		{
-			s = init_stack(s, inst[0][1]);
-			//break;
-		}
-
 		printf("stack: ");
 		int temp = s->bp;
-		/*while(temp <= s->sp)
+		while(temp < s->sp)
 		{
 			printf("S[%d]: %d ", temp, s->array[temp]);
 			temp++;
-		}*/
+		}
 		printf("\n");
 
-		printf("==> addr: \n");
+		if (halt)
+			break;
 
 		curInst++;
 	}
