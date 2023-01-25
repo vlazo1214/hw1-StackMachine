@@ -22,13 +22,15 @@ typedef struct stack{
 // function prototypes
 void test(stack *s);
 
-stack *alloc();
-
 void print_stack(stack *s);
+
+stack *alloc();
 
 void free_stack(stack *s);
 
 char *check_op(int op_code);
+
+stack *call(stack *s, int op, int field)
 
 
 stack *push(stack *s, int n);
@@ -59,5 +61,31 @@ stack *halt(stack *s);
 
 stack *stop_print(stack *s);
 
+
+stack *negate(stack *s);
+
+stack *add(stack *s);
+
+stack *subtract(stack *s);
+
+stack *multiply(stack *s);
+
+stack *divide(stack *s);
+
+stack *modulo(stack *s);
+
+int equals(stack *s);
+
+int not_equals(stack *s);
+
+int hard_less(stack *s);
+
+int less_equal(stack *s);
+
+int hard_greater(stack *s);
+
+int greater_equal(stack *s);
+
+stack *self_push(stack *s);
 
 #endif
