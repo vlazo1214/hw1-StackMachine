@@ -11,6 +11,7 @@ typedef struct instruction{
 
 // stack struct: size is the curr number of elements, sp is the next free space (top of stack+1),
 // and array is how we're storing the elements
+// for flag: 0 is normal, -1 if we need to halt, 1 if we stop printing but keep going
 typedef struct stack{
 	struct instruction *inst;
 	int size;
@@ -74,17 +75,17 @@ stack *divide(stack *s);
 
 stack *modulo(stack *s);
 
-int equals(stack *s);
+stack *equals(stack *s);
 
-int not_equals(stack *s);
+stack *not_equals(stack *s);
 
-int hard_less(stack *s);
+stack *hard_less(stack *s);
 
-int less_equal(stack *s);
+stack *less_equal(stack *s);
 
-int hard_greater(stack *s);
+stack *hard_greater(stack *s);
 
-int greater_equal(stack *s);
+stack *greater_equal(stack *s);
 
 stack *self_push(stack *s);
 

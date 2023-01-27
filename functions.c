@@ -165,35 +165,35 @@ stack *call(stack *s, int op, int field)
 		case 14:
 			return s;
 		case 15:
-			return s;
+			return negate(s);
 		case 16:
-			return s;
+			return add(s);
 		case 17:
-			return s;
+			return subtract(s);
 		case 18:
-			return s;
+			return multiply(s);
 		case 19:
-			return s;
+			return divide(s);
 		case 20:
-			return s;
+			return modulo(s);
 		case 21:
-			return s;
+			return equals(s);
 		case 22:
-			return s;
+			return not_equals(s);
 		case 23:
-			return s;
+			return hard_less(s);
 		case 24:
-			return s;
+			return less_equal(s);
 		case 25:
-			return s;
+			return hard_greater(s);
 		case 26:
-			return s;
+			return greater_equal(s);
 		case 27:
+			return self_push(s);
+		default:
 			return s;
 	}
-
 }
-
 
 // instructions
 
@@ -218,7 +218,7 @@ stack *from_subroutine(stack *s)
 {
 	if (s->sp-1 < 0 || s->sp-2 < 0)
 	{
-		printf("Trying to pop an empty stack!");
+		printf("Trying to pop an empty stack!\n");
 
 		s->flag = -1;
 		s->inst->op = 2;
@@ -282,6 +282,8 @@ stack *push_at_address(stack *s)
 
 	s->inst->op = 5;
 
+	// CHRISTIAN HERE: DEBUGGING TEST 4 WHERE SP IS INCREMENTING WHEN IT SHOULDN'T?
+	s->sp--;
 	return s;
 }
 // 6 (PRM) Parameter at stack[BP − o] is pushed on the stack
@@ -434,3 +436,129 @@ stack *stop_print(stack *s)
 
 	return s;
 }
+
+
+// 15 (NEG)
+stack *negate(stack *s)
+{
+	// SHOULD ADD EDGE CASE IF SP < 1
+
+	s->array[s->sp - 1] = s->array[s->sp - 1] * -1;
+	s->pc++;
+	return s;
+}
+
+// 16 (ADD)
+stack *add(stack *s)
+{
+	// SHOULD ADD EDGE CASE IF SP < 2 (functions 16 - 26)
+
+	//	stack[SP - 2]	=	stack[SP - 1]     +	  stack[SP - 2]
+	s->array[s->sp - 2] = s->array[s->sp - 1] + s->array[s->sp - 2];
+	s->sp--;
+	s->pc++;
+	return s; 
+}
+// 17 (SUB)
+stack *subtract(stack *s)
+{
+	//	stack[SP - 2]	=	stack[SP - 1]     -	  stack[SP - 2]
+	s->array[s->sp - 2] = s->array[s->sp - 1] - s->array[s->sp - 2];
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 18 (MUL)
+stack *multiply(stack *s)
+{
+	//	stack[SP - 2]	=	stack[SP - 1]     *	  stack[SP - 2]
+	s->array[s->sp - 2] = s->array[s->sp - 1] * s->array[s->sp - 2];
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 19 (DIV)
+stack *divide(stack *s)
+{
+	//	stack[SP - 2]	=	stack[SP - 1]     /	  stack[SP - 2]
+	s->array[s->sp - 2] = s->array[s->sp - 1] / s->array[s->sp - 2];
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 20 (MOD)
+stack *modulo(stack *s)
+{
+	//	stack[SP - 2]	=	stack[SP - 1]     %	  stack[SP - 2]
+	s->array[s->sp - 2] = s->array[s->sp - 1] % s->array[s->sp - 2];
+	s->sp--;
+	s->pc++;
+	return s;
+
+}
+
+// 21 (EQL)
+stack *equals(stack *s)
+{
+	s->array[s->sp - 2] = (s->array[s->sp - 1] == s->array[s->sp - 2]);
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 22 (NEQ)
+stack *not_equals(stack *s)
+{
+	s->array[s->sp - 2] = (s->array[s->sp - 1] != s->array[s->sp - 2]);
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 23 (LSS)
+stack *hard_less(stack *s)
+{
+	s->array[s->sp - 2] = (s->array[s->sp - 1] < s->array[s->sp - 2]);
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 24 (LEQ)
+stack *less_equal(stack *s)
+{
+	s->array[s->sp - 2] = (s->array[s->sp - 1] <= s->array[s->sp - 2]);
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 25 (GTR)
+stack *hard_greater(stack *s)
+{
+	s->array[s->sp - 2] = (s->array[s->sp - 1] > s->array[s->sp - 2]);
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// 26 (GEQ)
+stack *greater_equal(stack *s)
+{
+	s->array[s->sp - 2] = (s->array[s->sp - 1] >= s->array[s->sp - 2]);
+	s->sp--;
+	s->pc++;
+	return s;
+}
+
+// PSP
+stack *self_push(stack *s)
+{
+	s->array[s->sp] = s->sp;
+	s->sp++;
+	return s;
+}
+
