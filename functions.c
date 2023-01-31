@@ -260,7 +260,7 @@ stack *pop(stack *s)
 {
 	if (s->sp-1 < 0 || s->sp-2 < 0)
 	{
-		printf("Trying to pop an empty stack!");
+		printf("Trying to pop an empty stack!\n");
 
 		// s->flag = -1;
 		s->stop = -1;
@@ -283,10 +283,18 @@ stack *pop(stack *s)
 // 5 (PSI) go to the address of the value at stack[sp-1] and push it
 stack *push_at_address(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+		
+		s->stop = -1;
+
+		return s;
+	}
+
 	// updates pc
 	s->array[s->sp-1] = s->array[s->array[s->sp-1]];
 	s->pc++;
-	//printf("%d\n", s->array[s->sp-1]);
 	s->inst->op = 5;
 
 	return s;
@@ -313,7 +321,6 @@ stack *store_n_pop(stack *s, int o)
 	{
 		printf("Trying to pop an empty stack!\n");
 		
-		// s->flag = -1;
 		s->stop = -1;
 
 		return s;
@@ -348,6 +355,15 @@ stack *init_stack(stack *s, int m)
 // 9 (JMP) Jump to the address in stack[SP − 1] and pop
 stack *jump_to_address(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+		
+		s->stop = -1;
+
+		return s;
+	}
+
 	s->pc = s->array[s->sp-1];
 	s->sp--;
 
@@ -358,6 +374,15 @@ stack *jump_to_address(stack *s)
 // and also popping the stack.
 stack *jump_cond(stack *s, int a)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+		
+		s->stop = -1;
+
+		return s;
+	}
+
 	if (s->array[s->sp-1] != 0)
 	{
 		s->pc = a;
@@ -388,7 +413,6 @@ stack *out_and_pop(stack *s)
 	{
 		printf("Trying to pop an empty stack!\n");
 		
-		// s->flag = -1;
 		s->stop = -1;
 
 		return s;
@@ -411,34 +435,12 @@ stack *out_and_pop(stack *s)
 stack *store_char(stack *s)
 {
 	char c = getc(stdin);
-	//s->array[s->sp] = atoi(c);
 	s->array[s->sp] = (int)(c);
 	printf("Read in : %d\n", s->array[s->sp]);
 	s->sp++;
 	s->pc++;
+
 	return s;
-
-	// ALL BELOW IS OLD STUFF:
-	/*int n = (int) (in - 0);
-
-	s = push(s, n);
-
-	return s;*/
-}
-
-void test(stack *s)
-{
-	s = push(s, 1);
-	s = push(s, 2);
-	s = push(s, 3);
-
-	print_stack(s);
-
-	printf("\n");
-
-	//s = store_char(s, 'Y');
-
-	print_stack(s);
 }
 
 // 13 (HLT)
@@ -462,11 +464,10 @@ stack *stop_print(stack *s)
 // 15 (NEG)
 stack *negate(stack *s)
 {
-	// SHOULD ADD EDGE CASE IF SP < 1
 	if (s->sp < 1)
 	{
 		s->stop = -1;
-		printf("munmap_chunk(): invalid pointer\n");
+		printf("Trying to pop an empty stack!\n");
 		return s;
 	}
 
@@ -478,7 +479,15 @@ stack *negate(stack *s)
 // 16 (ADD)
 stack *add(stack *s)
 {
-	// SHOULD ADD EDGE CASE IF SP < 2 (functions 16 - 26)
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 16;
+		
+		return s;
+	}
 
 	//	stack[SP - 2]	=	stack[SP - 1]     +	  stack[SP - 2]
 	s->array[s->sp - 2] = s->array[s->sp - 1] + s->array[s->sp - 2];
@@ -489,6 +498,16 @@ stack *add(stack *s)
 // 17 (SUB)
 stack *subtract(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 17;
+		
+		return s;
+	}
+
 	//	stack[SP - 2]	=	stack[SP - 1]     -	  stack[SP - 2]
 	s->array[s->sp - 2] = s->array[s->sp - 1] - s->array[s->sp - 2];
 	s->sp--;
@@ -499,6 +518,16 @@ stack *subtract(stack *s)
 // 18 (MUL)
 stack *multiply(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 18;
+		
+		return s;
+	}
+
 	//	stack[SP - 2]	=	stack[SP - 1]     *	  stack[SP - 2]
 	s->array[s->sp - 2] = s->array[s->sp - 1] * s->array[s->sp - 2];
 	s->sp--;
@@ -509,11 +538,20 @@ stack *multiply(stack *s)
 // 19 (DIV)
 stack *divide(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 19;
+		
+		return s;
+	}
+
 	if (s->array[s->sp - 2] == 0)
 	{
           printf("Divisor is zero in DIV instruction!\n");
 
-          // put your new flag that halts the program here
 		  s->stop = -1;
 
           return s;
@@ -529,16 +567,24 @@ stack *divide(stack *s)
 // 20 (MOD)
 stack *modulo(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 20;
+		
+		return s;
+	}
+	
 	if (s->array[s->sp - 2] == 0)
 	{
           printf("Modulus is zero in MOD instruction!\n");
 
-          // put your new flag that halts the program here
 		  s->stop = -1;
 
           return s;
 	}
-
 
 	//	stack[SP - 2]	=	stack[SP - 1]     %	  stack[SP - 2]
 	s->array[s->sp - 2] = s->array[s->sp - 1] % s->array[s->sp - 2];
@@ -551,6 +597,16 @@ stack *modulo(stack *s)
 // 21 (EQL)
 stack *equals(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 21;
+		
+		return s;
+	}
+
 	s->array[s->sp - 2] = (s->array[s->sp - 1] == s->array[s->sp - 2]);
 	s->sp--;
 	s->pc++;
@@ -560,6 +616,16 @@ stack *equals(stack *s)
 // 22 (NEQ)
 stack *not_equals(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 22;
+		
+		return s;
+	}
+
 	s->array[s->sp - 2] = (s->array[s->sp - 1] != s->array[s->sp - 2]);
 	s->sp--;
 	s->pc++;
@@ -569,6 +635,16 @@ stack *not_equals(stack *s)
 // 23 (LSS)
 stack *hard_less(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 23;
+		
+		return s;
+	}
+
 	s->array[s->sp - 2] = (s->array[s->sp - 1] < s->array[s->sp - 2]);
 	s->sp--;
 	s->pc++;
@@ -578,6 +654,16 @@ stack *hard_less(stack *s)
 // 24 (LEQ)
 stack *less_equal(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 24;
+		
+		return s;
+	}
+
 	s->array[s->sp - 2] = (s->array[s->sp - 1] <= s->array[s->sp - 2]);
 	s->sp--;
 	s->pc++;
@@ -587,6 +673,16 @@ stack *less_equal(stack *s)
 // 25 (GTR)
 stack *hard_greater(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 25;
+		
+		return s;
+	}
+
 	s->array[s->sp - 2] = (s->array[s->sp - 1] > s->array[s->sp - 2]);
 	s->sp--;
 	s->pc++;
@@ -596,13 +692,23 @@ stack *hard_greater(stack *s)
 // 26 (GEQ)
 stack *greater_equal(stack *s)
 {
+	if (s->sp-1 < 0 || s->sp-2 < 0)
+	{
+		printf("Trying to pop an empty stack!\n");
+
+		s->stop = -1;
+		s->inst->op = 26;
+		
+		return s;
+	}
+
 	s->array[s->sp - 2] = (s->array[s->sp - 1] >= s->array[s->sp - 2]);
 	s->sp--;
 	s->pc++;
 	return s;
 }
 
-// PSP
+//  27 (PSP)
 stack *self_push(stack *s)
 {
 	s->array[s->sp] = s->sp;

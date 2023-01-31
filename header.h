@@ -22,8 +22,6 @@ typedef struct stack{
 } stack;
 
 // function prototypes
-void test(stack *s);
-
 void print_stack(stack *s);
 
 stack *alloc();

@@ -20,8 +20,6 @@ int main(int argc, char **argv)
 	// if file name invalid:
 	if (filename == NULL)
 	{
-		stack *s = alloc();
-		test(s);
 		return 0;
 	}
 	
@@ -30,17 +28,13 @@ int main(int argc, char **argv)
 		return 1;
 	
 	// int array to store the instructions for output and access
-	//int * inst = malloc((MAX_CODE_LENGTH * 2) * sizeof(int)); 
 	int inst[512][2]; 
 	int row = 0;
-	// int num = 0;
 	char * String = calloc(5, sizeof(char));
-	// int halt = 0;
 
 	while (!feof(fp))
 	{
 		fscanf(fp, "%s", String);
-		//inst[row][row % 2] = atoi(String);
 		inst[row/2][row%2] = atoi(String);
 		row++;
 	}
@@ -68,7 +62,6 @@ int main(int argc, char **argv)
 
 	printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[s->pc][0]), inst[s->pc][1]);
 
-	//while (curInst <= row)
 	while (s->pc <= row)
 	{
 
@@ -77,11 +70,6 @@ int main(int argc, char **argv)
 		if (s->stop == -1)
 			break;
 
-		//if (s->flag == -1)
-			//printf("flag is %d \n", s->flag);
-		//s = call(s, inst[curInst][0], inst[curInst][1]);
-
-		// printf("row = %d\n# of cycles = %d\n", row, curInst);
 		// print pc, bp, and sp
 		if (s->flag <= 0 && !s->stop)
 			printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
