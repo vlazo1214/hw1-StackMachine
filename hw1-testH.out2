@@ -1,0 +1,40 @@
+Addr	OP	M
+0	INC	2
+1	CAL	8
+2	LIT	89
+3	NDB	0
+4	CHO	0
+5	LIT	10
+6	CHO	0
+7	HLT	0
+8	RTN	0
+Tracing...
+PC: 0 BP: 0 SP: 0
+stack: 
+==> addr: 0	INC	2
+PC: 1 BP: 0 SP: 2
+stack: S[0]: 0 S[1]: 0 
+==> addr: 1	CAL	8
+PC: 8 BP: 2 SP: 4
+stack: S[2]: 0 S[3]: 1 
+==> addr: 8	LIT	89
+PC: 9 BP: 2 SP: 5
+stack: S[2]: 0 S[3]: 1 S[4]: 89 
+==> addr: 9	NDB	0
+PC: 9 BP: 2 SP: 5
+stack: S[2]: 0 S[3]: 1 S[4]: 89 
+==> addr: 9	CHO	0
+Y
+PC: 10 BP: 2 SP: 4
+stack: S[2]: 0 S[3]: 1 
+==> addr: 10	LIT	10
+PC: 11 BP: 2 SP: 5
+stack: S[2]: 0 S[3]: 1 S[4]: 10 
+==> addr: 11	CHO	0
+
+
+PC: 12 BP: 2 SP: 4
+stack: S[2]: 0 S[3]: 1 
+==> addr: 12	HLT	0
+PC: 13 BP: 2 SP: 4
+stack: S[2]: 0 S[3]: 1 

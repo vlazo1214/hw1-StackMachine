@@ -33,9 +33,9 @@ int main(int argc, char **argv)
 	//int * inst = malloc((MAX_CODE_LENGTH * 2) * sizeof(int)); 
 	int inst[512][2]; 
 	int row = 0;
-	int num = 0;
+	// int num = 0;
 	char * String = calloc(5, sizeof(char));
-	int halt = 0;
+	// int halt = 0;
 
 	while (!feof(fp))
 	{

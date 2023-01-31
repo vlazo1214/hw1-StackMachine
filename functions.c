@@ -130,6 +130,8 @@ char *check_op(int op_code)
 		case 27:
 			return "PSP";
 	}
+
+	return "ERROR";
 }
 
 stack *call(stack *s, int op, int field)
@@ -368,6 +370,8 @@ stack *jump_cond(stack *s, int a)
 	else
 	{
 		s->inst->op = 10;
+		s->pc++;
+		s->sp--;
 		return s;
 	}
 }
