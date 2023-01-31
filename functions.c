@@ -162,7 +162,7 @@ stack *call(stack *s, int op, int field)
 		case 11:
 			return out_and_pop(s);
 		case 12:
-			return s;
+			return store_char(s);
 		case 13:
 			return halt(s);
 		case 14:
@@ -286,7 +286,7 @@ stack *push_at_address(stack *s)
 	// updates pc
 	s->array[s->sp-1] = s->array[s->array[s->sp-1]];
 	s->pc++;
-
+	//printf("%d\n", s->array[s->sp-1]);
 	s->inst->op = 5;
 
 	return s;
@@ -407,13 +407,23 @@ stack *out_and_pop(stack *s)
 }
 
 // 12 (CHI) read in character value and push as an int
-stack *store_char(stack *s, char in)
+// stack *store_char(stack *s, char in)
+stack *store_char(stack *s)
 {
-	int n = (int) (in - 0);
+	char c = getc(stdin);
+	//s->array[s->sp] = atoi(c);
+	s->array[s->sp] = (int)(c);
+	printf("Read in : %d\n", s->array[s->sp]);
+	s->sp++;
+	s->pc++;
+	return s;
+
+	// ALL BELOW IS OLD STUFF:
+	/*int n = (int) (in - 0);
 
 	s = push(s, n);
 
-	return s;
+	return s;*/
 }
 
 void test(stack *s)
@@ -426,7 +436,7 @@ void test(stack *s)
 
 	printf("\n");
 
-	s = store_char(s, 'Y');
+	//s = store_char(s, 'Y');
 
 	print_stack(s);
 }
@@ -453,6 +463,12 @@ stack *stop_print(stack *s)
 stack *negate(stack *s)
 {
 	// SHOULD ADD EDGE CASE IF SP < 1
+	if (s->sp < 1)
+	{
+		s->stop = -1;
+		printf("munmap_chunk(): invalid pointer\n");
+		return s;
+	}
 
 	s->array[s->sp - 1] = s->array[s->sp - 1] * -1;
 	s->pc++;

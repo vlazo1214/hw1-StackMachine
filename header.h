@@ -57,7 +57,7 @@ stack *jump_cond(stack *s, int a);
 
 stack *out_and_pop(stack *s);
 
-stack *store_char(stack *s, char in);
+stack *store_char(stack *s);
 
 stack *halt(stack *s);
 
