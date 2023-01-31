@@ -223,7 +223,8 @@ stack *from_subroutine(stack *s)
 	{
 		printf("Trying to pop an empty stack!\n");
 
-		s->flag = -1;
+		s->stop = -1;
+		// s->flag = -1;
 		s->inst->op = 2;
 		
 		return s;
@@ -261,7 +262,8 @@ stack *pop(stack *s)
 	{
 		printf("Trying to pop an empty stack!");
 
-		s->flag = -1;
+		// s->flag = -1;
+		s->stop = -1;
 		s->inst->op = 4;
 		
 		return s;
@@ -282,12 +284,11 @@ stack *pop(stack *s)
 stack *push_at_address(stack *s)
 {
 	// updates pc
-	s = push(s, s->array[s->sp-1]);
+	s->array[s->sp-1] = s->array[s->array[s->sp-1]];
+	s->pc++;
 
 	s->inst->op = 5;
 
-	// CHRISTIAN HERE: DEBUGGING TEST 4 WHERE SP IS INCREMENTING WHEN IT SHOULDN'T?
-	s->sp--;
 	return s;
 }
 // 6 (PRM) Parameter at stack[BP − o] is pushed on the stack
@@ -312,7 +313,8 @@ stack *store_n_pop(stack *s, int o)
 	{
 		printf("Trying to pop an empty stack!\n");
 		
-		s->flag = -1;
+		// s->flag = -1;
+		s->stop = -1;
 
 		return s;
 	}
@@ -361,7 +363,8 @@ stack *jump_cond(stack *s, int a)
 		s->pc = a;
 		s->inst->op = 10;
 
-		s = pop(s);
+		s->sp--;
+		s->size--;
 		s->inst->m = a;
 
 		s->inst->op = 9;
@@ -385,7 +388,8 @@ stack *out_and_pop(stack *s)
 	{
 		printf("Trying to pop an empty stack!\n");
 		
-		s->flag = -1;
+		// s->flag = -1;
+		s->stop = -1;
 
 		return s;
 	}
@@ -395,7 +399,7 @@ stack *out_and_pop(stack *s)
 	char out = (char) temp;
 
 	// pop takes care of updating pc, as well as popping from the stack
-	printf("%c\n", out);
+	printf("%c", out);
 
 	s->inst->op = 11;
 
@@ -489,6 +493,16 @@ stack *multiply(stack *s)
 // 19 (DIV)
 stack *divide(stack *s)
 {
+	if (s->array[s->sp - 2] == 0)
+	{
+          printf("Divisor is zero in DIV instruction!\n");
+
+          // put your new flag that halts the program here
+		  s->stop = -1;
+
+          return s;
+	}
+
 	//	stack[SP - 2]	=	stack[SP - 1]     /	  stack[SP - 2]
 	s->array[s->sp - 2] = s->array[s->sp - 1] / s->array[s->sp - 2];
 	s->sp--;
@@ -499,6 +513,17 @@ stack *divide(stack *s)
 // 20 (MOD)
 stack *modulo(stack *s)
 {
+	if (s->array[s->sp - 2] == 0)
+	{
+          printf("Modulus is zero in MOD instruction!\n");
+
+          // put your new flag that halts the program here
+		  s->stop = -1;
+
+          return s;
+	}
+
+
 	//	stack[SP - 2]	=	stack[SP - 1]     %	  stack[SP - 2]
 	s->array[s->sp - 2] = s->array[s->sp - 1] % s->array[s->sp - 2];
 	s->sp--;

@@ -71,7 +71,11 @@ int main(int argc, char **argv)
 	//while (curInst <= row)
 	while (s->pc <= row)
 	{
+
 		s = call(s, inst[s->pc][0], inst[s->pc][1]); 
+
+		if (s->stop == -1)
+			break;
 
 		//if (s->flag == -1)
 			//printf("flag is %d \n", s->flag);
