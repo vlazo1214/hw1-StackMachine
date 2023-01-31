@@ -68,11 +68,16 @@ int main(int argc, char **argv)
 
 
 	while (curInst <= row)
+	while (s->pc <= row)
 	{
 		if (s->flag <= 0)
-			printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[curInst][0]), inst[curInst][1]);
+			printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[s->pc][0]), inst[s->pc][1]);
 
-		s = call(s, inst[curInst][0], inst[curInst][1]);
+		s = call(s, inst[s->pc][0], inst[s->pc][1]); 
+
+		//if (s->flag == 1)
+			//printf("flag is %d \n", s->flag);
+		//s = call(s, inst[curInst][0], inst[curInst][1]);
 
 		// printf("row = %d\n# of cycles = %d\n", row, curInst);
 		// print pc, bp, and sp
@@ -98,7 +103,8 @@ int main(int argc, char **argv)
 			break;
 
 		curInst++;
-
+		if (curInst > 20)
+			break;
 	}
 
 	free_stack(s);

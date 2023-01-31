@@ -165,7 +165,7 @@ stack *call(stack *s, int op, int field)
 		case 13:
 			return halt(s);
 		case 14:
-			return s;
+			return stop_print(s);
 		case 15:
 			return negate(s);
 		case 16:
@@ -240,6 +240,7 @@ stack *from_subroutine(stack *s)
 // 3 (CAL) shift focus to index p, making some changes to the stack along the way
 stack *shift_indices(stack *s, int p)
 {
+	s->pc++;
 	s->array[s->sp] = s->bp;
 	s->array[s->sp+1] = s->pc;
 
@@ -437,7 +438,7 @@ stack *halt(stack *s)
 stack *stop_print(stack *s)
 {
 	s->flag = 1;
-
+	s->pc++;
 	return s;
 }
 
@@ -563,6 +564,7 @@ stack *self_push(stack *s)
 {
 	s->array[s->sp] = s->sp;
 	s->sp++;
+	s->pc++;
 	return s;
 }
 
