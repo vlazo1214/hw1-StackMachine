@@ -66,28 +66,26 @@ int main(int argc, char **argv)
 	printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
 	printf("stack: \n");
 
+	printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[s->pc][0]), inst[s->pc][1]);
 
-	while (curInst <= row)
+	//while (curInst <= row)
 	while (s->pc <= row)
 	{
-		if (s->flag <= 0)
-			printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[s->pc][0]), inst[s->pc][1]);
-
 		s = call(s, inst[s->pc][0], inst[s->pc][1]); 
 
-		//if (s->flag == 1)
+		//if (s->flag == -1)
 			//printf("flag is %d \n", s->flag);
 		//s = call(s, inst[curInst][0], inst[curInst][1]);
 
 		// printf("row = %d\n# of cycles = %d\n", row, curInst);
 		// print pc, bp, and sp
-		if (s->flag <= 0)
+		if (s->flag <= 0 && !s->stop)
 			printf("PC: %d BP: %d SP: %d\n", s->pc, s->bp, s->sp);
 
-		if (s->flag <= 0)
+		if (s->flag <= 0 && !s->stop)
 			printf("stack: ");
 		int temp = s->bp;
-		if (s->flag <= 0)
+		if (s->flag <= 0 && !s->stop)
 		{	
 			while(temp < s->sp)
 			{
@@ -101,6 +99,8 @@ int main(int argc, char **argv)
 		// if we need to halt or pop from empty 
 		if (s->flag == -1)
 			break;
+		if (s->flag <= 0)
+			printf("==> addr: %d\t%s\t%d\n", s->pc, check_op(inst[s->pc][0]), inst[s->pc][1]);
 
 		curInst++;
 		if (curInst > 20)

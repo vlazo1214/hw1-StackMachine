@@ -54,6 +54,7 @@ stack *alloc()
 	s->bp = 0;
 	s->pc = 0;
 	s->flag = 0;
+	s->stop = 0;
 
 	s->inst->op = 0;
 	s->inst->m = 0;
@@ -438,6 +439,7 @@ stack *halt(stack *s)
 stack *stop_print(stack *s)
 {
 	s->flag = 1;
+	s->stop = 1;
 	s->pc++;
 	return s;
 }

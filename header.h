@@ -18,6 +18,7 @@ typedef struct stack{
 	int sp, bp, pc;
 	int *array;
 	int flag;
+	int stop;
 } stack;
 
 // function prototypes
